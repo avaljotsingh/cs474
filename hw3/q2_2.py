@@ -7,12 +7,16 @@ def intersect(l1, u1, l2, u2):
 def not_eq(l1, u1, l2, u2):
     return Not(And([l1==u1, l2==u2]))
 
+def correct(l, u):
+    return l<u
+
 l1, u1, l2, u2, l3, u3, l4, u4 = Reals('l1 u1 l2 u2 l3 u3 l4 u4')
 
 distinct = And([not_eq(l1, u1, l2, u2), not_eq(l1, u1, l3, u3), not_eq(l1, u1, l4, u4), not_eq(l2, u2, l3, u3), not_eq(l3, u3, l4, u4)])
 inters = And([intersect(l1, u1, l2, u2), intersect(l1, u1, l4, u4), intersect(l2, u2, l3, u3), intersect(l3, u3, l4, u4), Not(intersect(l1, u1, l3, u3)), Not(intersect(l2, u2, l4, u4))])
+correct_intervals = And([correct(l1, u1), correct(l2, u2), correct(l3, u3), correct(l4, u4)])
 
-phi = Exists([l1, u1, l2, u2, l3, u3, l4, u4], And(inters, distinct))
+phi = Exists([l1, u1, l2, u2, l3, u3, l4, u4], And([inters, distinct, correct_intervals]))
 
 s = Solver()
 s.add(phi)
